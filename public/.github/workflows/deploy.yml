@@ -1,0 +1,39 @@
+name: Deploy to GitHub Pages
+
+# mainブランチにプッシュされたとき実行
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. リポジトリをチェックアウト
+      - uses: actions/checkout@v3
+
+      # 2. Node.jsのバージョンを設定 (必要に応じて指定)
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      # 3. 依存関係をインストール
+      - name: Install dependencies
+        run: npm install
+
+      # 4. ビルド (プロジェクトに合わせてコマンド変更)
+      - name: Build
+        run: npm run build
+
+      # 5. GitHub Pagesへデプロイ
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # ここをビルド成果物のディレクトリに合わせる
+          # (Reactなどでは "build" ディレクトリの場合も)
+          publish_dir: ./dist
+          # デプロイ先をgh-pagesブランチに設定
+          publish_branch: gh-pages
